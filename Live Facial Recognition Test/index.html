@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Live_Facial_Recognition_Test</title>
+    <script defer src="js/face-api.min.js"></script>
+    <script defer src="js/main.js"></script>
+    <link href="css/default.css" rel="stylesheet" />
+    <style>
+        .center_text {
+            margin: auto;
+            width: 80%;
+            text-align: center;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body {
+            background-image: url('images/simpsons graphics.gif');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        canvas{
+            position: absolute
+        }
+    </style>
+</head>
+<body>
+    <div class="center_text">
+        
+        <video id="video" width="1920" height="1080" autoplay muted></video>
+    </div>
+
+</body>
+</html>
