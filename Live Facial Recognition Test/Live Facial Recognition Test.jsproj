@@ -69,7 +69,8 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="images\hmm.gif" />
-    <Content Include="images\passport photo.jpg" />
+    <Content Include="images\IMG_5562.JPG" />
+    <Content Include="Training\Calvin.jpg" />
     <Content Include="images\rainbow.gif" />
     <Content Include="images\simpsons graphics.gif" />
     <Content Include="images\soft-smooth-rainbow-vertical-blended-stripes-abstract-blur-gradient-background-illustration-computer-generated-diagonal-paper-136622692.jpg" />
