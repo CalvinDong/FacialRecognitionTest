@@ -25,7 +25,7 @@ function startVideo() {
     console.log(faceapi.nets)
 }
 
-async function getReferences() {
+async function getImages() {
     const results = await faceapi
         .detectAllFaces(referenceImage)
         .withFaceLandmarks()
