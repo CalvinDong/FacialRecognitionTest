@@ -26,10 +26,9 @@ function startVideo() {
 }
 
 async function getImages() {
-    const results = await faceapi
-        .detectAllFaces(referenceImage)
-        .withFaceLandmarks()
-        .withFaceDescriptors()
+    const labels = ['Calvin Dong', 'Bernie Sanders']
+    const img = await faceapi.fetchImage('https://github.com/CalvinDong/FacialRecognitionTest/blob/master/Live%20Facial%20Recognition%20Test/Training/Calvin%20Dong.jpg')
+    
 }
 
 video.addEventListener('play', () => {
@@ -46,6 +45,7 @@ video.addEventListener('play', () => {
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
     }, 100)
+    console.log(imageUrl)
 })
 
 /*async function pictureDetect() {

@@ -70,8 +70,6 @@
     </AppxManifest>
     <Content Include="images\hmm.gif" />
     <Content Include="images\IMG_5562.JPG" />
-    <Content Include="Training\Bernie Sanders.jpg" />
-    <Content Include="Training\Calvin Dong.jpg" />
     <Content Include="images\rainbow.gif" />
     <Content Include="images\simpsons graphics.gif" />
     <Content Include="images\soft-smooth-rainbow-vertical-blended-stripes-abstract-blur-gradient-background-illustration-computer-generated-diagonal-paper-136622692.jpg" />
@@ -104,6 +102,8 @@
     <Content Include="models\ssd_mobilenetv1_model-weights_manifest.json" />
     <Content Include="models\tiny_face_detector_model-shard1" />
     <Content Include="models\tiny_face_detector_model-weights_manifest.json" />
+    <Content Include="training\Bernie_Sanders.jpg" />
+    <Content Include="training\Calvin_Dong.jpg" />
     <None Include="Live Facial Recognition Test_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
