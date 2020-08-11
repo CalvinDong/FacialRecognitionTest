@@ -3,8 +3,6 @@
 //import * as faceapi from 'face-api.js'; 
 
 const video = document.getElementById('video')
-//const picture = document.getElementById('myFace')
-const labeledDescriptors = []
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('\models'),
@@ -29,15 +27,42 @@ function startVideo() {
 
 function getImages() {
     const labels = ['Calvin_Dong', 'Bernie_Sanders']
-    labels.map(async label => {
-        const descriptions = []
-        const img = await faceapi.fetchImage('https://raw.githubusercontent.com/CalvinDong/FacialRecognitionTest/master/Live%20Facial%20Recognition%20Test/training/${label}.jpg')
-        const detections = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
-        descriptions.push(detections.descriptor)
-        labeledDescriptors = new faceapi.LabeledFaceDescriptors(label, descriptions)
-    })
+    return Promise.all( //Promises to return an array of all promised values
+        labels.map(async label => {
+            const descriptions = [] //Array of face information to be pushed to LabeledFaceDescriptors
+            const img = await faceapi.fetchImage('https://raw.githubusercontent.com/CalvinDong/FacialRecognitionTest/master/Live%20Facial%20Recognition%20Test/training/' + label + '.jpg')
+            const detections = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor()
+            descriptions.push(detections.descriptor) //Add information of person's face to descriptions array (there can be multiple of the same person)
+            return new faceapi.LabeledFaceDescriptors(label, descriptions)
+        })
+    )
 }
 
+// Recognise certain faces
+video.addEventListener('play', async () => {
+    const canvas = document.getElementById('overlay')
+    const displaySize = { width: video.width, height: video.height }
+    faceapi.matchDimensions(canvas, displaySize)
+    const labeledDescriptors = await getImages() // This is an array of arrays. The Arrays are hold each labeled face descriptor
+    const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, .6)
+    setInterval(async () => {
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors()
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+        const resizedDetections = faceapi.resizeResults(detections, displaySize)
+        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        console.log(resizedDetections)
+        results.forEach((result, i) => {
+            const box = resizedDetections[i].detection.box
+            const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
+            drawBox.draw(canvas)
+        })
+        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+    }, 100)
+})
+
+
+/*
+//Recognising what's a face
 video.addEventListener('play', () => {
     //const canvas = faceapi.createCanvasFromMedia(video)
     //document.body.append(canvas)
@@ -48,14 +73,13 @@ video.addEventListener('play', () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
         const resizedDetections = faceapi.resizeResults(detections, displaySize)
-        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, .6)
-        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-        console.log(results)
+        console.log(resizedDetections)
         faceapi.draw.drawDetections(canvas, resizedDetections)
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
     }, 100)
 })
+*/
 
 /*async function pictureDetect() {
     const canvas = document.getElementById('overlay')
