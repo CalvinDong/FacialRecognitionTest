@@ -4,6 +4,7 @@
 
 const video = document.getElementById('video')
 //const picture = document.getElementById('myFace')
+const labeledDescriptors = []
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('\models'),
@@ -14,7 +15,8 @@ Promise.all([
     faceapi.nets.faceRecognitionNet.loadFromUri('\models'),
     faceapi.nets.mtcnn.loadFromUri('\models'),
     faceapi.nets.ssdMobilenetv1.loadFromUri('\models')
-]).then(startVideo)
+]).then(getImages)
+  .then(startVideo)
 
 function startVideo() {
     navigator.getUserMedia(
@@ -25,10 +27,15 @@ function startVideo() {
     console.log(faceapi.nets)
 }
 
-async function getImages() {
-    const labels = ['Calvin Dong', 'Bernie Sanders']
-    const img = await faceapi.fetchImage('https://github.com/CalvinDong/FacialRecognitionTest/blob/master/Live%20Facial%20Recognition%20Test/Training/Calvin%20Dong.jpg')
-    
+function getImages() {
+    const labels = ['Calvin_Dong', 'Bernie_Sanders']
+    labels.map(async label => {
+        const descriptions = []
+        const img = await faceapi.fetchImage('https://raw.githubusercontent.com/CalvinDong/FacialRecognitionTest/master/Live%20Facial%20Recognition%20Test/training/${label}.jpg')
+        const detections = await faceapi.detectSingleFace(img, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+        descriptions.push(detections.descriptor)
+        labeledDescriptors = new faceapi.LabeledFaceDescriptors(label, descriptions)
+    })
 }
 
 video.addEventListener('play', () => {
@@ -41,11 +48,13 @@ video.addEventListener('play', () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
         const resizedDetections = faceapi.resizeResults(detections, displaySize)
+        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, .6)
+        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        console.log(results)
         faceapi.draw.drawDetections(canvas, resizedDetections)
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
     }, 100)
-    console.log(imageUrl)
 })
 
 /*async function pictureDetect() {
