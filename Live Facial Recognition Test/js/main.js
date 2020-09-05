@@ -6,13 +6,13 @@ const video = document.getElementById('video')
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('\models'),
-    faceapi.nets.ageGenderNet.loadFromUri('\models'),
-    faceapi.nets.faceExpressionNet.loadFromUri('\models'),
+    //faceapi.nets.ageGenderNet.loadFromUri('\models'),
+    //faceapi.nets.faceExpressionNet.loadFromUri('\models'),
     faceapi.nets.faceLandmark68Net.loadFromUri('\models'),
-    faceapi.nets.faceLandmark68TinyNet.loadFromUri('\models'),
+    //faceapi.nets.faceLandmark68TinyNet.loadFromUri('\models'),
     faceapi.nets.faceRecognitionNet.loadFromUri('\models'),
-    faceapi.nets.mtcnn.loadFromUri('\models'),
-    faceapi.nets.ssdMobilenetv1.loadFromUri('\models')
+    //faceapi.nets.mtcnn.loadFromUri('\models'),
+    //faceapi.nets.ssdMobilenetv1.loadFromUri('\models')
 ]).then(getImages)
   .then(startVideo)
 
@@ -43,14 +43,15 @@ video.addEventListener('play', async () => {
     const canvas = document.getElementById('overlay')
     const displaySize = { width: video.width, height: video.height }
     faceapi.matchDimensions(canvas, displaySize)
-    const labeledDescriptors = await getImages() // This is an array of arrays. The Arrays are hold each labeled face descriptor
+  const labeledDescriptors = await getImages() // This is an array of arrays. The Arrays are hold each labeled face descriptor
+  //console.log(labeledDescriptors[0])
     const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, .6)
     setInterval(async () => {
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors()
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
         const resizedDetections = faceapi.resizeResults(detections, displaySize)
         const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-        console.log(resizedDetections)
+        //console.log(resizedDetections)
         results.forEach((result, i) => {
             const box = resizedDetections[i].detection.box
             const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
